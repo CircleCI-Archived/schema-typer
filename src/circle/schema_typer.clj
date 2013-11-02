@@ -12,7 +12,7 @@
    (class? schema) schema
    :else (class schema)))
 
-(defmulti convert "" #'convert-dispatch )
+(defmulti convert "" #'convert-dispatch)
 
 (defmethod convert Number [s]
   'Number)
@@ -35,7 +35,7 @@
     :mandatory))
 
 (defn convert-hmap
-  "Returns a core.typed HMap. All keys of the map must be keywords"
+  "Returns a core.typed HMap."
   [s]
   (assert (map? s))
   (let [{:keys [mandatory optional]} (group-by hmap-grouper s)
@@ -77,7 +77,6 @@
 (defn schema->type
   "Takes a prismatic schema. Returns a list of symbols that can be understood as a core.typed type."
   [s]
-  ;; {:post [(do (println "schema->type" s %) true) (or (symbol? %) (list? %))]}
   (convert s))
 
 (defmacro def-schema-type
