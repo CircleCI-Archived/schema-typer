@@ -3,7 +3,8 @@
   (:require [clojure.test :refer :all]
             [clojure.core.typed :as t]
             [schema.core :as s]
-            [circle.schema-typer :as st]))
+            [circle.schema-typer :as st]
+            [circle.schema-type-def :as td]))
 
 (defn is-equiv
   "Takes a value, a schema and a *quoted* type, i.e. '(HMap :mandatory ...). Asserts that v passes both schema and type"
@@ -32,3 +33,11 @@
         s {:foo {:bar String}}
         t '(HMap :mandatory {:foo (HMap :mandatory {:bar String})})]
     (is-equiv v s t)))
+
+(deftest optional-keys
+  (let [s {:foo Number
+           (s/optional-key :bar) String}
+        t '(HMap :mandatory {:foo Number} :optional {:bar String})]
+    (is-equiv {:foo 3} s t)
+    (is-equiv {:foo 3
+               :bar "hello"} s t)))
