@@ -3,7 +3,6 @@
   (:require [clojure.core.typed :as t]))
 
 (defn convert-dispatch [schema]
-  (println "convert-dispatch:" schema)
   (cond
    (class? schema) schema
    :else (class schema)))
@@ -13,8 +12,10 @@
 (defmethod convert Number [s]
   'java.lang.Number)
 
+(defmethod convert String [s]
+  'java.lang.String)
+
 (defmethod convert clojure.lang.Symbol [s]
-  (println "convert symbol:" s)
   s)
 
 (defn convert-hmap
@@ -38,7 +39,7 @@
         vt (-> s first val)]
     (assert (class kt))
     (assert (class vt))
-    (list 'Map (class->name kt) (class->name vt))))
+    (list 't/Map (class->name kt) (class->name vt))))
 
 (defn non-hmap? [s]
   (and (map? s)
@@ -52,7 +53,7 @@
 (defn schema->type
   "Takes a prismatic schema. Returns a list of symbols that can be understood as a core.typed type."
   [s]
-  {:post [(do (println "schema->type" s %) true) (or (symbol? %) (list? %))]}
+  ;; {:post [(do (println "schema->type" s %) true) (or (symbol? %) (list? %))]}
   (convert s))
 
 (defmacro def-schema-type
