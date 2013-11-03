@@ -26,13 +26,13 @@
 (defmulti convert "" #'convert-dispatch)
 
 (defmethod convert Number [s]
-  'Number)
+  'java.lang.Number)
 
 (defmethod convert String [s]
-  'String)
+  'java.lang.String)
 
 (defmethod convert Keyword [s]
-  'Keyword)
+  'clojure.lang.Keyword)
 
 (defmethod convert clojure.lang.Symbol [s]
   s)
