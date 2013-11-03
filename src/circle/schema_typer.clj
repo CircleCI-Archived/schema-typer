@@ -7,19 +7,20 @@
 
 (t/warn-on-unannotated-vars)
 
-(t/ann clojure.core/val (All [x] (Fn [(clojure.lang.IMapEntry Any x) -> x])))
+(ann clojure.core/val (All [x] (Fn [(clojure.lang.IMapEntry Any x) -> x])))
+(ann clojure.core/group-by (All [x y] [(Fn [x -> y]) (t/Seq x) -> (t/Map y (t/Seq x))]))
 
 ;; refine these later
 (def-alias Schema (U Number (t/Map Any Any) (HMap)))
 (def-alias CoreType (U Symbol (t/Seq Any)))
 
-(t/ann convert-dispath [Schema -> Class])
+(ann convert-dispath [Schema -> Class])
 (defn convert-dispatch [schema]
   (cond
    (class? schema) schema
    :else (class schema)))
 
-(t/ann convert [Schema -> CoreType])
+(ann ^:no-check convert [Schema -> CoreType])
 (defmulti convert "" #'convert-dispatch)
 
 (defmethod convert Number [s]
@@ -34,15 +35,15 @@
 (defmethod convert clojure.lang.Symbol [s]
   s)
 
-(t/ann hmap-grouper [IMapEntry -> (U (Value :mandatory)
-                                     (Value :optional))])
+(ann hmap-grouper [(IMapEntry Any Any) -> (U (Value :mandatory)
+                                             (Value :optional))])
 (defn hmap-grouper
   [kv]
   (if (= schema.core.OptionalKey (class (key kv)))
     :optional
     :mandatory))
 
-(t/ann convert-hmap [(HMap) -> CoreType])
+(ann ^:no-check convert-hmap [(HMap) -> CoreType])
 (defn convert-hmap
   "Returns a core.typed HMap."
   [s]
@@ -61,11 +62,11 @@
           :mandatory (convert-kvs mandatory)
           :optional (convert-kvs optional))))
 
-(t/ann class->name [Class -> Symbol])
+(ann class->name [Class -> Symbol])
 (defn class->name [^Class c]
   (-> c .getName symbol))
 
-(t/ann convert-map [(t/Map Any Any) -> CoreType])
+(ann convert-map [(t/Map Any Any) -> CoreType])
 (defn convert-map [s]
   (assert (map? s))
   (assert (= 1 (count s)) "convert-map only supports one kv")
@@ -75,7 +76,7 @@
     (assert (= Class (class vt)))
     (list 't/Map (class->name kt) (class->name vt))))
 
-(t/ann non-hmap? [Schema -> Boolean])
+(ann non-hmap? [Schema -> Boolean])
 (defn non-hmap? [s]
   (and (map? s)
        (class? (first (keys s)))))
