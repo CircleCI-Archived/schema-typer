@@ -1,11 +1,16 @@
 (ns circle.schema-type-def
   (:require [clojure.core.typed :as t]
+            [schema.core :as s]
             [circle.schema-typer :as st]))
 
 ;; data used for testing
-(st/def-schema-type User {:login String
-                          :login-count Number})
+(t/ann user-schema st/Schema)
+(def user-schema {:login String
+                  :login-count Number})
 
-(t/ann test-user User)
-(def test-user {:login "foo"
-                 :login-count 5})
+(st/def-schema-type User user-schema)
+(st/def-validator validate-user User user-schema)
+
+(t/ann foo [-> User])
+(defn foo []
+  (validate-user {:login "arohner"}))

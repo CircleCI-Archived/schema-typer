@@ -41,3 +41,6 @@
     (is-equiv {:foo 3} s t)
     (is-equiv {:foo 3
                :bar "hello"} s t)))
+
+(deftest real-use-works
+  (is (t/check-ns 'circle.schema-type-def)))

@@ -14,6 +14,8 @@
 (def-alias Schema (U Number (t/Map Any Any) (HMap)))
 (def-alias CoreType (U Symbol (t/Seq Any)))
 
+(ann schema.core/validate [Schema Any -> Any])
+
 (ann convert-dispath [Schema -> Class])
 (defn convert-dispatch [schema]
   (cond
@@ -96,4 +98,14 @@
 (defmacro def-schema-type
   "creates a def-alias named type-name, from schema type"
   [type-name s]
-  `(def-alias ~type-name ~(schema->type s)))
+  (let [s (eval s)
+        concrete-type (schema->type s)]
+    `(def-alias ~type-name ~concrete-type)))
+
+(defmacro def-validator
+  "defns a fn of type [Any -> type-name] that throws on validation failure. type should be a def-alias created by def-schema-type"
+  [validator-name type schema]
+  `(do
+     (t/ann ~(vary-meta validator-name assoc :no-check true)  [~'Any ~'-> ~type])
+     (defn ~validator-name [x#]
+       (s/validate ~schema x#))))
