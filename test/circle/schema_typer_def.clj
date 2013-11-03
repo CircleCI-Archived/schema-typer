@@ -1,4 +1,4 @@
-(ns circle.schema-type-def
+(ns circle.schema-typer-def
   (:require [clojure.core.typed :as t]
             [schema.core :as s]
             [circle.schema-typer :as st]))

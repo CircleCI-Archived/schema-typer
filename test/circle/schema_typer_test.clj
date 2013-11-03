@@ -3,8 +3,7 @@
   (:require [clojure.test :refer :all]
             [clojure.core.typed :as t]
             [schema.core :as s]
-            [circle.schema-typer :as st]
-            [circle.schema-type-def :as td]))
+            [circle.schema-typer :as st]))
 
 (defn is-equiv
   "Takes a value, a schema and a *quoted* type, i.e. '(HMap :mandatory ...). Asserts that v passes both schema and type"
@@ -43,4 +42,4 @@
                :bar "hello"} s t)))
 
 (deftest real-use-works
-  (is (t/check-ns 'circle.schema-type-def)))
+  (is (t/check-ns 'circle.schema-typer-def)))
