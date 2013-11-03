@@ -15,6 +15,7 @@ is properly happening, at runtime.
 
 Usage
 =====
+```clojure
 (:require [schema.core :as s]
           [circle.schema-typer :refer (def-schema-type def-validator])
 
@@ -26,7 +27,7 @@ Usage
 ;; we now have
 ;; (t/ann validate-user [Any -> User])
 ;; (defn validate-user [x] ...)
-
+```
 
 Limitations
 ===========
