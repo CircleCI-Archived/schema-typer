@@ -12,7 +12,7 @@
 
 ;; refine these later
 (def-alias Schema (U Number (t/Map Any Any) (HMap)))
-(def-alias CoreType (U Symbol (t/Seq Any)))
+(def-alias CoreType (U Symbol (t/Seq (U Symbol Keyword))))
 
 (ann schema.core/validate [Schema Any -> Any])
 
@@ -68,7 +68,7 @@
 (defn class->name [^Class c]
   (-> c .getName symbol))
 
-(ann convert-map [(t/Map Any Any) -> CoreType])
+(ann convert-map [(t/Map Class Class) -> CoreType])
 (defn convert-map [s]
   (assert (map? s))
   (assert (= 1 (count s)) "convert-map only supports one kv")
