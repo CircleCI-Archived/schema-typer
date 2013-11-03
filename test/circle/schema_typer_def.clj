@@ -8,7 +8,7 @@
 (def user-schema {:login String
                   :login-count Number})
 
-(st/def-schema-type User user-schema)
+(st/def-schema-alias User user-schema)
 (st/def-validator validate-user User user-schema)
 
 (t/ann foo [-> User])

@@ -95,7 +95,7 @@
   [s]
   (convert s))
 
-(defmacro def-schema-type
+(defmacro def-schema-alias
   "creates a def-alias named type-name, from schema type"
   [type-name s]
   (let [s (eval s)
@@ -103,7 +103,7 @@
     `(def-alias ~type-name ~concrete-type)))
 
 (defmacro def-validator
-  "defns a fn of type [Any -> type-name] that throws on validation failure. type should be a def-alias created by def-schema-type"
+  "defns a fn of type [Any -> type-name] that throws on validation failure. type should be a def-alias created by def-schema-alias"
   [validator-name type schema]
   `(do
      (t/ann ~(vary-meta validator-name assoc :no-check true)  [~'Any ~'-> ~type])
