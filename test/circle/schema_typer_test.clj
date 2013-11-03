@@ -24,7 +24,7 @@
 (deftest maps-work
   (let [v {:bar "foo"}
         s {Keyword String}
-        t '(t/Map Keyword String)]
+        t (list 'clojure.core.typed/Map 'clojure.lang.Keyword 'String)]
     (is-equiv v s t)))
 
 (deftest nested-hmaps-work

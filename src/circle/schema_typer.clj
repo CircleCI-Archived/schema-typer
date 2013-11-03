@@ -76,7 +76,7 @@
         vt (-> s first val)]
     (assert (= Class (class kt)))
     (assert (= Class (class vt)))
-    (list 't/Map (class->name kt) (class->name vt))))
+    (list 'clojure.core.typed/Map (class->name kt) (class->name vt))))
 
 (ann non-hmap? [Schema -> Boolean])
 (defn non-hmap? [s]
