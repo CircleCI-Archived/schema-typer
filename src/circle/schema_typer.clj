@@ -89,6 +89,10 @@
     (convert-map s)
     (convert-hmap s)))
 
+(defmethod convert clojure.lang.IPersistentVector [s]
+  (assert (= 1 (count s)))
+  (list 'clojure.core.typed/Vec (convert (first s))))
+
 (t/ann schema->type [Schema -> CoreType])
 (defn schema->type
   "Takes a prismatic schema. Returns a list of symbols that can be understood as a core.typed type."

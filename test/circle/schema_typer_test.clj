@@ -41,5 +41,10 @@
     (is-equiv {:foo 3
                :bar "hello"} s t)))
 
+(deftest vectors
+  (let [s [{:foo Long}]
+        t '(clojure.core.typed/Vec (HMap :mandatory {:foo Integer}))]
+    (is-equiv [{:foo 3}] s t)))
+
 (deftest real-use-works
   (is (t/check-ns 'circle.schema-typer-def)))
