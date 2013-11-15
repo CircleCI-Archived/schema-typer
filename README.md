@@ -22,12 +22,12 @@ Usage
 (def user-schema {:login String}) ;; define a normal prismatic schema
 
 (def-schema-type User user-schema)
-;; now we have (def-alias User (HMap :mandatory {:login}))
+;; defines (def-alias User (HMap :mandatory {:login String}))
 
 (def-validator validate-user)
 ;; now we have
 ;; (t/ann validate-user [Any -> User])
-;; (defn validate-user [x] ...)
+;; (defn validate-user [x] (s/validate user-schema x)
 ```
 
 Limitations
