@@ -12,8 +12,14 @@
   (is (t/check-form* v t))
   (is (t/check-form* v (st/schema->type s))))
 
-(deftest leaves-work
+(deftest numbers-work
   (is-equiv 3 s/Number 'java.lang.Number))
+
+(deftest any
+  (is-equiv "foo" s/Any 'Any))
+
+(deftest schema-pred
+  (is-equiv :foo s/Keyword 'clojure.lang.Keyword))
 
 (deftest hmaps-work
   (let [v {:foo 5}
