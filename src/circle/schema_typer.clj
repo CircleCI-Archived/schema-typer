@@ -16,14 +16,26 @@
 
 (ann schema.core/validate [Schema Any -> Any])
 
+(defn convert-predicate-dispatch [s]
+  (:pred-name s))
+
+(defmulti convert-predicate "" #'convert-predicate-dispatch)
+
+(defmethod convert-predicate 'keyword? [s]
+  'clojure.lang.Keyword)
+
 (ann convert-dispath [Schema -> Class])
 (defn convert-dispatch [schema]
   (cond
+   (= schema.core.Predicate (class schema)) :predicate
    (class? schema) schema
    :else (class schema)))
 
 (ann ^:no-check convert [Schema -> CoreType])
 (defmulti convert "" #'convert-dispatch)
+
+(defmethod convert :predicate [s]
+  (convert-predicate s))
 
 (defmethod convert Number [s]
   'java.lang.Number)
