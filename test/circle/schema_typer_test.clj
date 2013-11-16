@@ -39,6 +39,14 @@
         t '(HMap :mandatory {:foo (HMap :mandatory {:bar java.lang.String})})]
     (is-equiv v s t)))
 
+(deftest mixed-map-hmap
+  (let [v {:foo {:bar "baz"}
+           :not-listed "String"}
+        s {:foo {:bar String}
+           s/Keyword s/Any}
+        t '(HMap :mandatory {:foo (HMap :mandatory {:bar java.lang.String})})]
+    (is-equiv v s t)))
+
 (deftest optional-keys
   (let [s {:foo Number
            (s/optional-key :bar) String}

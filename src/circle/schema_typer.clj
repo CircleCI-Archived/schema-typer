@@ -60,6 +60,16 @@
     :optional
     :mandatory))
 
+(ann convert-map [(t/Map Schema Schema) -> CoreType])
+(defn convert-map [s]
+  (assert (map? s))
+  (assert (= 1 (count s)) "convert-map only supports one kv")
+  (let [ks (-> s first key)
+        vs (-> s first val)
+        kt (convert ks)
+        vt (convert vs)]
+    (list 'clojure.core.typed/Map kt vt)))
+
 (ann ^:no-check convert-hmap [(HMap) -> CoreType])
 (defn convert-hmap
   "Returns a core.typed HMap."
@@ -79,30 +89,45 @@
           :mandatory (convert-kvs mandatory)
           :optional (convert-kvs optional))))
 
-(ann class->name [Class -> Symbol])
-(defn class->name [^Class c]
-  (-> c .getName symbol))
+(defn hmap-key?
+  "True if this key is a valid pure-hmap key, i.e. Keyword or OptionalKey "
+  [k]
+  (or (keyword? k)
+      (= schema.core.OptionalKey (class k))))
 
-(ann convert-map [(t/Map Class Class) -> CoreType])
-(defn convert-map [s]
-  (assert (map? s))
-  (assert (= 1 (count s)) "convert-map only supports one kv")
-  (let [kt (-> s first key)
-        vt (-> s first val)]
-    (assert (= Class (class kt)))
-    (assert (= Class (class vt)))
-    (list 'clojure.core.typed/Map (class->name kt) (class->name vt))))
-
-(ann non-hmap? [Schema -> Boolean])
-(defn non-hmap? [s]
+(defn pure-map? [s]
   (and (map? s)
-       (class? (first (keys s)))))
+       (every? (comp not hmap-key?) (keys s))))
+
+(defn pure-hmap? [s]
+  (and (map? s)
+       (every? hmap-key? (keys s))))
+
+(defn intersection [t1 t2]
+  (list 'I t1 t2))
+
+(defn split-map
+  [s]
+  "given a schema that contains HMap and t/Map keys, split and return two maps"
+  (let [{hmap true
+         map false} (group-by (fn [[k v]]
+                                (hmap-key? k)) s)]
+    {:hmap (into {} hmap)
+     :map (into {} map)}))
 
 (defmethod convert clojure.lang.IPersistentMap [s]
+
+  ;; three kinds of maps:
+  ;; 'pure' map {Keyword String} -> (t/Map Keyword String)
+  ;; 'pure' hmap: {:foo String} -> (HMap :mandatory {:foo String})
+  ;; 'mixed': {:foo String, Keyword String} -> (I (t/Map Keyword STring) (HMap :mandatory {:foo String}
+
   (assert (map? s))
-  (if (non-hmap? s)
-    (convert-map s)
-    (convert-hmap s)))
+  (cond
+   (pure-map? s) (convert-map s)
+   (pure-hmap? s) (convert-hmap s)
+   :else (let [{:keys [hmap map]} (split-map s)]
+           (intersection (convert-hmap hmap) (convert-map map)))))
 
 (defmethod convert clojure.lang.IPersistentVector [s]
   (assert (= 1 (count s)))
