@@ -25,9 +25,10 @@ Usage
 ;; defines (def-alias User (HMap :mandatory {:login String}))
 
 (def-validator validate-user)
-;; now we have
+;; defines
 ;; (t/ann validate-user [Any -> User])
-;; (defn validate-user [x] (s/validate user-schema x)
+;; (defn validate-user [x]
+;;   (s/validate user-schema x))
 ```
 
 Limitations
