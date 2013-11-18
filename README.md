@@ -9,9 +9,9 @@ Q: Why the hell build this?
 
 A: core.typed is good at compile-time validation. prismatic/schema is
 good at run-time validation. This avoids duplication between your
-core.type definition, and your schema definition. Having proper
-types for schemas allows you to prove at compile-time that validation
-is properly happening, at runtime.
+core.type definition, and your schema definition. Having types for
+schemas allows you to prove at compile-time that validation is
+happening, at runtime.
 
 Usage
 =====
