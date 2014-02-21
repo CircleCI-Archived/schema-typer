@@ -13,7 +13,7 @@
   (is (t/check-form* v (st/schema->type s))))
 
 (deftest numbers-work
-  (is-equiv 3 s/Number 'java.lang.Number))
+  (is-equiv 3 s/Num 'java.lang.Number))
 
 (deftest any
   (is-equiv "foo" s/Any 'Any))
