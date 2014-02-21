@@ -60,5 +60,12 @@
         t '(clojure.core.typed/Vec (HMap :mandatory {:foo Integer}))]
     (is-equiv [{:foo 3}] s t)))
 
+(deftest bools
+  (let [s {:foo s/Bool
+           :bar Boolean}
+        t '(HMap :mandatory {:foo java.lang.Boolean
+                             :bar java.lang.Boolean})]
+    (is-equiv {:foo true :bar false} s t)))
+
 (deftest real-use-works
   (is (t/check-ns 'circle.schema-typer-def)))
