@@ -46,6 +46,9 @@
 (defmethod convert Keyword [s]
   'clojure.lang.Keyword)
 
+(defmethod convert Boolean [s]
+  'java.lang.Boolean)
+
 (defmethod convert schema.core.AnythingSchema [s]
   'Any)
 
