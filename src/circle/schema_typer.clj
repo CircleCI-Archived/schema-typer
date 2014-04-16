@@ -12,7 +12,7 @@
 
 ;; refine these later
 (def-alias Schema (U Number (t/Map Any Any) (HMap)))
-(def-alias CoreType (U Symbol (t/Seq (U Symbol Keyword CoreType))))
+(def-alias CoreType (Rec [x] (U Symbol (t/Seq (U Symbol Keyword x)))))
 
 (ann schema.core/validate [Schema Any -> Any])
 
