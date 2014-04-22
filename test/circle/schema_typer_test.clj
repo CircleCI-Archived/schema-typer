@@ -55,6 +55,15 @@
     (is-equiv {:foo 3
                :bar "hello"} s t)))
 
+(deftest maybe-value
+  (let [s {:foo Number
+           :bar (s/maybe String)}
+        t '(HMap :mandatory {:foo java.lang.Number
+                             :bar (clojure.core.typed/Option java.lang.String)})]
+    (is-equiv {:foo 3 :bar nil} s t)
+    (is-equiv {:foo 3
+               :bar "hello"} s t)))
+
 (deftest vectors
   (let [s [{:foo Long}]
         t '(clojure.core.typed/Vec (HMap :mandatory {:foo Integer}))]
