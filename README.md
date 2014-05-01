@@ -4,7 +4,7 @@ schema-typer
 Creates core.typed types from prismatic/schema definitions. Inspired by https://gist.github.com/c-spencer/6569571
 
 ```clojure
-[circleci/schema-typer "0.2.0"]
+[circleci/schema-typer "0.2.2"]
 ```
 Requires schema > 0.2.0
 
@@ -14,7 +14,7 @@ Motivation
 Q: Why the hell build this?
 
 A: core.typed is good at compile-time validation. prismatic/schema is
-good at run-time validation. This avoids duplication between your
+good at run-time validation. schema-typer avoids duplication between your
 core.type definition, and your schema definition. Having types for
 schemas allows you to prove at compile-time that validation is
 happening, at runtime.
@@ -42,7 +42,7 @@ Limitations
 
 It's pretty janky atm. There are a few critical ^:no-checks, because
 core.typed doesn't yet 'believe' that schema is validating
-properly. Currently, def-validators are ^:no-checked, but call (schema.core/validate schema) so you get proper checking at runtime.
+properly. Currently, def-validators are ^:no-checked, but they do call (schema.core/validate schema) so you get proper checking at runtime.
 
 The mapping from schema -> core.typed is currently extremely incomplete, but it should be obvious how to extend. Patches welcome.
 
