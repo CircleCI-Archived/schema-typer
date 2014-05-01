@@ -125,8 +125,9 @@
   ;; 'pure' hmap: {:foo String} -> (HMap :mandatory {:foo String})
   ;; 'mixed': {:foo String, Keyword String} -> (I (t/Map Keyword STring) (HMap :mandatory {:foo String}
 
-  (assert (map? s))
+  (assert (or (map? s) (class? s)))
   (cond
+   (= s clojure.lang.IPersistentMap) '(clojure.core.typed/Map Any Any)
    (pure-map? s) (convert-map s)
    (pure-hmap? s) (convert-hmap s)
    :else (let [{:keys [hmap map]} (split-map s)]

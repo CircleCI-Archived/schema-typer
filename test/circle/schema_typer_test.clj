@@ -1,5 +1,6 @@
 (ns circle.schema-typer-test
-  (:import (clojure.lang Keyword))
+  (:import (clojure.lang Keyword
+                         IPersistentMap))
   (:require [clojure.test :refer :all]
             [clojure.core.typed :as t]
             [schema.core :as s]
@@ -45,6 +46,12 @@
         s {:foo {:bar String}
            s/Keyword s/Any}
         t '(HMap :mandatory {:foo (HMap :mandatory {:bar java.lang.String})})]
+    (is-equiv v s t)))
+
+(deftest map-class
+  (let [v {:foo {:bar "baz"}}
+        s {:foo IPersistentMap}
+        t '(HMap :mandatory {:foo (clojure.core.typed/Map Any Any)})]
     (is-equiv v s t)))
 
 (deftest optional-keys
