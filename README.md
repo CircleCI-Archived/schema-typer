@@ -23,14 +23,14 @@ Usage
 =====
 ```clojure
 (:require [schema.core :as s]
-          [circle.schema-typer :refer (def-schema-type def-validator])
+          [circle.schema-typer :refer (def-schema-type def-validator)])
 
 (def user-schema {:login String}) ;; define a normal prismatic schema
 
-(def-schema-type User user-schema)
+(def-schema-alias User user-schema)
 ;; defines (def-alias User (HMap :mandatory {:login String}))
 
-(def-validator validate-user)
+(def-validator validate-user User user-schema)
 ;; defines
 ;; (t/ann validate-user [Any -> User])
 ;; (defn validate-user [x]
