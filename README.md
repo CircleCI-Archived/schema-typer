@@ -23,7 +23,7 @@ Usage
 =====
 ```clojure
 (:require [schema.core :as s]
-          [circle.schema-typer :refer (def-schema-type def-validator)])
+          [circle.schema-typer :refer (def-schema-alias def-validator)])
 
 (def user-schema {:login String}) ;; define a normal prismatic schema
 
