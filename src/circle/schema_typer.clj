@@ -1,28 +1,27 @@
 (ns circle.schema-typer
   "Creates core.typed types from prismatic/schema
    definitions. Inspired by https://gist.github.com/c-spencer/6569571"
-  (:import (clojure.lang Symbol Keyword IMapEntry))
-  (:require [clojure.core.typed :as t :refer (ann def-alias)]
+  (:import (clojure.lang Keyword IMapEntry))
+  (:require [clojure.core.typed :as t]
             [schema.core :as s]))
 
 (t/warn-on-unannotated-vars)
 
-(ann clojure.core/val (All [x] (Fn [(clojure.lang.IMapEntry Any x) -> x])))
-(ann clojure.core/group-by (All [x y] [(Fn [x -> y]) (t/Seq x) -> (t/Map y (t/Seq x))]))
+(t/ann clojure.core/group-by (t/All [x y] [(t/IFn [x -> y]) (t/Seq x) -> (t/Map y (t/Seq x))]))
 
 ;; refine these later
-(def-alias Schema (U Number (t/Map Any Any) (HMap)))
-(def-alias CoreType (U Symbol (t/Seq Any)))
+(t/defalias Schema (t/U Number (t/Map t/Any t/Any) (t/HMap)))
+(t/defalias CoreType (t/U t/Sym (t/Seq t/Any)))
 
-(ann schema.core/validate [Schema Any -> Any])
+(t/ann schema.core/validate [Schema t/Any -> t/Any])
 
-(ann convert-dispath [Schema -> Class])
+(t/ann convert-dispath [Schema -> Class])
 (defn convert-dispatch [schema]
   (cond
    (class? schema) schema
    :else (class schema)))
 
-(ann ^:no-check convert [Schema -> CoreType])
+(t/ann ^:no-check convert [Schema -> CoreType])
 (defmulti convert "" #'convert-dispatch)
 
 (defmethod convert Number [s]
@@ -37,15 +36,15 @@
 (defmethod convert clojure.lang.Symbol [s]
   s)
 
-(ann hmap-grouper [(IMapEntry Any Any) -> (U (Value :mandatory)
-                                             (Value :optional))])
+(t/ann hmap-grouper [(IMapEntry t/Any t/Any) -> (t/U (t/Val :mandatory)
+                                                     (t/Val :optional))])
 (defn hmap-grouper
   [kv]
   (if (= schema.core.OptionalKey (class (key kv)))
     :optional
     :mandatory))
 
-(ann ^:no-check convert-hmap [(HMap) -> CoreType])
+(t/ann ^:no-check convert-hmap [(t/HMap) -> CoreType])
 (defn convert-hmap
   "Returns a core.typed HMap."
   [s]
@@ -60,15 +59,15 @@
                          (do
                            [k (convert v)]))
                        (into {})))]
-    (list 'HMap
+    (list `t/HMap
           :mandatory (convert-kvs mandatory)
           :optional (convert-kvs optional))))
 
-(ann class->name [Class -> Symbol])
+(t/ann class->name [Class -> t/Sym])
 (defn class->name [^Class c]
   (-> c .getName symbol))
 
-(ann convert-map [(t/Map Any Any) -> CoreType])
+(t/ann convert-map [(t/Map t/Any t/Any) -> CoreType])
 (defn convert-map [s]
   (assert (map? s))
   (assert (= 1 (count s)) "convert-map only supports one kv")
@@ -78,7 +77,7 @@
     (assert (= Class (class vt)))
     (list 'clojure.core.typed/Map (class->name kt) (class->name vt))))
 
-(ann non-hmap? [Schema -> Boolean])
+(t/ann non-hmap? [Schema -> Boolean])
 (defn non-hmap? [s]
   (and (map? s)
        (class? (first (keys s)))))
@@ -96,16 +95,16 @@
   (convert s))
 
 (defmacro def-schema-alias
-  "creates a def-alias named type-name, from schema type"
+  "creates a defalias named type-name, from schema type"
   [type-name s]
   (let [s (eval s)
         concrete-type (schema->type s)]
-    `(def-alias ~type-name ~concrete-type)))
+    `(t/defalias ~type-name ~concrete-type)))
 
 (defmacro def-validator
-  "defns a fn of type [Any -> type-name] that throws on validation failure. type should be a def-alias created by def-schema-alias"
+  "defns a fn of type [Any -> type-name] that throws on validation failure. type should be a defalias created by def-schema-alias"
   [validator-name type schema]
   `(do
-     (t/ann ~(vary-meta validator-name assoc :no-check true)  [~'Any ~'-> ~type])
+     (t/ann ~(vary-meta validator-name assoc :no-check true) [t/Any :-> ~type])
      (defn ~validator-name [x#]
        (s/validate ~schema x#))))
