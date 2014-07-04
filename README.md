@@ -4,7 +4,7 @@ schema-typer
 Creates core.typed types from prismatic/schema definitions. Inspired by https://gist.github.com/c-spencer/6569571
 
 ```clojure
-[org.ambrosebs/schema-typer "0.2.4"]
+[circleci/schema-typer "0.2.3"]
 ```
 Requires schema > 0.2.0
 
