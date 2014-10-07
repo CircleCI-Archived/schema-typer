@@ -1,8 +1,7 @@
-schema-typer ![CircleCI Status][]
+schema-typer
 ============
 
-[CircleCI Status]: https://circleci.com/gh/circleci/schema-typer.png
-
+[![CircleCI Status](https://circleci.com/gh/circleci/schema-typer.png?style=badge)](https://circleci.com/gh/circleci/schema-typer)
 
 Creates core.typed types from prismatic/schema definitions. Inspired by https://gist.github.com/c-spencer/6569571
 
